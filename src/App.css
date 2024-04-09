@@ -27,6 +27,16 @@
 .App-link {
   color: #61dafb;
 }
+.centerFlex {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.startFlex {
+  display: flex;
+  justify-content: start;
+  align-content: center;
+}
 
 @keyframes App-logo-spin {
   from {
@@ -35,4 +45,11 @@
   to {
     transform: rotate(360deg);
   }
+}
+.Logo {
+  background-image: url(../public/img104.png);
+}
+.marginTopBottom{
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
