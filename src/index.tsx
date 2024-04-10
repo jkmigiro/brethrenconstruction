@@ -7,6 +7,9 @@ import {BrowserRouter, Route, RouterProvider, Routes, ScrollRestoration} from "r
 import Main from "./Main";
 import About from "./about/About";
 import ContactUs from "./contact/ContactUs";
+import NotFound from "./NotFound";
+
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -17,7 +20,7 @@ root.render(
                 <Route index element={<Main/>}/>
                 <Route path="about" element={<About/>}/>
                 <Route path="contact" element={<ContactUs/>}/>
-
+                <Route path="*" element={<NotFound/>}/>
             </Route>
         </Routes>
     </BrowserRouter>

@@ -11,7 +11,6 @@ const {Text, Title, Paragraph} = Typography
 const color: string = '#ecc719'
 const Foot: React.FC = () => {
     const size = useContext(ResponsiveContext);
-    console.log("Size: ", size);
     return (
         <Footer color={"black"}
                 style={{

@@ -1,32 +1,40 @@
-import React from 'react';
-import {
-    BorderBottomOutlined,
-    BorderTopOutlined
-} from '@ant-design/icons';
-import { Button, Divider, notification, Space } from 'antd';
-import type { NotificationArgsProps } from 'antd';
+import React, {useEffect} from 'react';
+import {BorderTopOutlined} from '@ant-design/icons';
+import type {NotificationArgsProps} from 'antd';
+import {Button, notification, Space} from 'antd';
 
 type NotificationPlacement = NotificationArgsProps['placement'];
+
 interface ErrorInterface {
     error: string;
 }
 
-const App: React.FC<ErrorInterface> = ({error}) => {
+const ErrorNotification: React.FC<ErrorInterface> = ({error}) => {
     const [api, contextHolder] = notification.useNotification();
+    let buttonRef = React.createRef<HTMLElement>();
 
-    const openNotification = (placement: NotificationPlacement) => {
+    const openNotification = (placement: NotificationPlacement = 'bottom') => {
         api.info({
             message: `Error Occurred`,
-            description:error,
+            description: error,
             placement,
         });
     };
+    useEffect(() => {
+        if (buttonRef.current) {
+            buttonRef.current.click();
+        }
+    }, [buttonRef]);
 
     return (
         <>
             {contextHolder}
             <Space>
-                <Button type="primary" onClick={() => openNotification('top')} icon={<BorderTopOutlined />}>
+                <Button type="primary"
+                        onClick={() => openNotification()}
+                        ref={buttonRef}
+                        style={{visibility: 'hidden', position: 'absolute'}}
+                        icon={<BorderTopOutlined/>}>
                     top
                 </Button>
             </Space>
@@ -35,4 +43,4 @@ const App: React.FC<ErrorInterface> = ({error}) => {
     );
 };
 
-export default App;
+export default ErrorNotification;

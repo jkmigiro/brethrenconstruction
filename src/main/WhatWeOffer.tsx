@@ -14,7 +14,6 @@ interface ParagraphProps {
 
 const WhatWeOffer: React.FC<ParagraphProps> = ({props}) => {
     const size = useContext(ResponsiveContext);
-    console.log("Size: ", size)
 
     return (
         <Row gutter={16} style={{paddingLeft: "30px", paddingRight: "30px"}}>

@@ -41,7 +41,6 @@ const Nav: React.FC = () => {
     const [current, setCurrent] = useState('mail');
 
     const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
         setCurrent(e.key);
     };
 

@@ -1,9 +1,13 @@
-import React from "react";
-import {Breadcrumb, Col, Divider, Layout, Row, Space, theme, Typography} from "antd";
-import Icon, {HomeOutlined, PhoneOutlined, MailOutlined} from '@ant-design/icons';
+import React, {useState} from "react";
+import {Breadcrumb, Col, Layout, notification, Row, Space, Typography} from "antd";
+import {DownloadOutlined} from "@ant-design/icons"
 import {Link} from "react-router-dom";
+import axios from "axios";
+import ErrorNotification from "../helpers/ErrorNotification";
+import ReactDOM from "react-dom/client";
+import {NotificationPlacement} from "antd/es/notification/interface";
 
-const {Header, Content, Sider} = Layout;
+const {Content} = Layout;
 const {Text, Title, Paragraph} = Typography;
 
 //#ecc719
@@ -15,27 +19,60 @@ interface AboutUsType {
 }
 
 const About: React.FC = () => {
-    const {
-        token: {colorBgContainer, borderRadiusLG},
-    } = theme.useToken();
     const mqXs: number = 24;
     const mqOthers: number = 21;
+    const pdf: string = process.env.REACT_APP_PDF_URL as string;
+    const [error,setError] = useState('');
+    const [api, contextHolder] = notification.useNotification();
+
+
+    const openNotification = (placement: NotificationPlacement = 'bottom') => {
+        api.info({
+            message: `Your download will begin shortly.`,
+            placement,
+        });
+    };
+    async function getCompanyProfile(){
+       let response:any;
+       await axios.get(pdf,{responseType:"blob"})
+           .then(r => response = r)
+           .catch(reason => setError(reason.message))
+           .finally(() => setError(''))
+
+       if (response !== undefined){
+           const url = window.URL.createObjectURL(new Blob([response.data]))
+           const link = document.createElement('a')
+           link.href = url
+           link.setAttribute('download', 'BRETHREN COMPANY PROFILE.pdf')
+           document.body.appendChild(link)
+           link.click()
+       }else {
+          setError('Error occurred')
+       }
+
+
+   }
+
     return (
         <div>
             <Layout>
+                {contextHolder}
                     <Content>
                         <Row  style={{padding:"30px"}}>
                             <Col xs={mqXs} sm={mqOthers} md={mqOthers} lg={mqOthers} xl={mqOthers}>
-                                <Breadcrumb
-                                    items={[
-                                        {
-                                            title: 'Home',
-                                        },
-                                        {
-                                            title: (<Text style={{fontWeight: "bolder"}}>About Us</Text>),
-                                        },
-                                    ]}
-                                />
+                                <Space>
+                                    <Breadcrumb
+                                        items={[
+                                            {
+                                                title: 'Home',
+                                            },
+                                            {
+                                                title: (<Text style={{fontWeight: "bolder"}}>About Us</Text>),
+                                            },
+                                        ]}
+                                    />
+
+                                </Space>
                             </Col>
                             {
                                 aboutUs.map((item,i) => (
@@ -44,13 +81,28 @@ const About: React.FC = () => {
                                         <Paragraph>
                                             {item.content}
                                         </Paragraph>
+                                        {
+                                            i === 0 && (
+                                                <Space onClick={() =>  getCompanyProfile()}
+                                                       style={{cursor:"pointer",color: "#1677ff"}}
+                                                >
+                                                    <Title onClick={() => openNotification()} level={5} style={{margin:"0", color: "#1677ff"}}>Company Profile</Title>
+                                                    <DownloadOutlined onClick={() => openNotification()} style={{ fontSize: '18px' }}/>
+                                                </Space>
+
+                                            )
+                                        }
                                     </Col>
                                 ))
                             }
                         </Row>
                     </Content>
-
             </Layout>
+            {
+                error !== '' && (
+                    <ErrorNotification error={error}/>
+                )
+            }
         </div>
     )
 };
@@ -75,7 +127,7 @@ const aboutUs: AboutUsType[] = [
                Brethren
                Construction Limited excels in a broad spectrum of projects including Commercial,
                Residential,
-               Industrial/Civil, Refurbishment, and Fit-out across Kenya. 
+               Industrial/Civil, Refurbishment, and Fit-out across Kenya.
         `
     },
     {

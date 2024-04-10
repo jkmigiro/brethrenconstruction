@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import {Breadcrumb, Button, Col, Form, Input, Layout, Row, Space, Typography} from "antd";
+import {Breadcrumb, Button, Col, Form, Input, Layout, notification, Row, Space, Typography} from "antd";
 import {HomeOutlined, MailOutlined, PhoneOutlined} from "@ant-design/icons";
-import ErrorNotification from "../helpers/ErrorNotification";
-import {sendEmail} from "../services/Service";
 import MailInterface from "../interfaces/MailInterface";
+import axios from "axios";
+import {NotificationPlacement} from "antd/es/notification/interface";
 
 
 const {Item} = Form;
@@ -24,29 +24,40 @@ const formItemLayout = {
 const ContactUs: React.FC = () => {
     const mqXs: number = 24;
     const [form] = Form.useForm();
+    const [api, contextHolder] = notification.useNotification();
+
+
+    const openNotification = (placement: NotificationPlacement = 'bottom') => {
+        api.info({
+            message: `Successfully sent.`,
+            placement,
+        });
+    };
     const [error,setError] = useState('');
     const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
-        const email : MailInterface = {
+        const mail : MailInterface = {
             from: values.email,
             to: 'info@brethrenconstructionltd.co.ke',
             subject: values.name,
             text: values.message
         }
-        const url =process.env.REACT_APP_API_URL;
-        console.log('URL is: ',process.env.REACT_APP_API_URL);
-        console.log('Email: ',email)
 
-        sendEmail(email)
-            .then(r => console.log('Successful Response: ',r))
-            .catch(reason => setError(error));
-
+        const url: string = process.env.REACT_APP_MAIL_URL as string;
+        axios.post(url, mail)
+            .then(r => {
+                openNotification()
+            })
+            .catch(reason => {
+                setError(reason.response.data);
+            });
+        form.isFieldTouched("email");
 
 
     };
+
     return (
-        <div>
             <Layout>
+                {contextHolder}
                 <Content>
                     <Row
                         align={"middle"}
@@ -132,12 +143,18 @@ const ContactUs: React.FC = () => {
                                     </Item>
                                     <Item
                                         name="message"
-                                        rules={[{ required: true, message: 'Please input message' }]}
+                                        rules={[
+                                            { required: true, message: 'Please input message' },
+                                            {
+                                                min:3,
+                                                message:"Message too short. 3 or more characters."
+                                            },
+                                        ]}
                                     >
-                                        <Input.TextArea showCount maxLength={100} placeholder={"Your Message"}/>
+                                        <Input.TextArea showCount maxLength={500} placeholder={"Your Message"}/>
                                     </Item>
                                     <Item >
-                                        <Button type="primary" htmlType="submit">
+                                        <Button type="primary" htmlType="submit" >
                                             Submit
                                         </Button>
                                     </Item>
@@ -147,15 +164,15 @@ const ContactUs: React.FC = () => {
                         </Col>
                     </Row>
                 </Content>
-                {
-                    error && (
-                        <ErrorNotification error={error}/>
-                    )
-                }
+                <div style={{marginBottom:"120px"}}>
+
+                </div>
             </Layout>
-        </div>
     )
 };
+
+
+
 
 const contactUsElements: ContactUsType[] = [
     {
