@@ -7,10 +7,24 @@ type TitleDescText = {
     align: Alignment,
     justify: Justify
 };
+type TitleList = {
+    title: string,
+    titleDesc: string,
+    data: { description: string; title: string }[],
+    align: Alignment,
+    justify: Justify
+};
 
 
 export interface TitleDescTextProps {
     props: TitleDescText,
+}
+export interface TitleListProps {
+    props: TitleList,
+}
+export interface ServicesDataInterface{
+    title: string,
+    description: string
 }
 
 export {};

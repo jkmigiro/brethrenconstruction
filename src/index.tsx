@@ -8,6 +8,7 @@ import Main from "./Main";
 import About from "./about/About";
 import ContactUs from "./contact/ContactUs";
 import NotFound from "./NotFound";
+import CoreValues from "./about/CoreValues";
 
 
 const root = ReactDOM.createRoot(
@@ -20,6 +21,7 @@ root.render(
                 <Route index element={<Main/>}/>
                 <Route path="about" element={<About/>}/>
                 <Route path="contact" element={<ContactUs/>}/>
+                <Route path="core-values" element={<CoreValues/>}/>
                 <Route path="*" element={<NotFound/>}/>
             </Route>
         </Routes>
