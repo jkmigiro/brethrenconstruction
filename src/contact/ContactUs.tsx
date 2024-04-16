@@ -4,6 +4,7 @@ import {HomeOutlined, MailOutlined, PhoneOutlined} from "@ant-design/icons";
 import MailInterface from "../interfaces/MailInterface";
 import axios from "axios";
 import {NotificationPlacement} from "antd/es/notification/interface";
+import {Link} from "react-router-dom";
 
 
 const {Item} = Form;
@@ -12,7 +13,9 @@ const {Content}= Layout;
 
 interface ContactUsType{
     icon: React.ReactNode,
-    content: string
+    content: string | React.ReactNode,
+    element?:React.ReactNode,
+    content2?:string
 }
 const formItemLayout = {
     wrapperCol: {
@@ -88,6 +91,15 @@ const ContactUs: React.FC = () => {
                                                     <Space align={"center"} size={"large"}>
                                                         {item.icon}
                                                         {item.content}
+                                                        {item.element}
+                                                    </Space>
+                                                    <Space align={"center"} size={"large"}>
+                                                        {
+                                                            i === 0 && (
+                                                                <HomeOutlined style={{color:"#f5f5f5"}}/>
+                                                            )
+                                                        }
+                                                        {item.content2}
                                                     </Space>
                                                 </Col>
                                             </Row>
@@ -177,17 +189,26 @@ const ContactUs: React.FC = () => {
 const contactUsElements: ContactUsType[] = [
     {
         icon:(<HomeOutlined/>),
-        content:"P.O. BOX 84197 - 80100, Mombasa, Kenya"
+        content:` P.O. BOX 50020 - 00100, Nairobi, Kenya. `,
+        content2:"Kitengela, Along Namanga Road.",
+        element:(<br/>)
     },
     {
         icon:(<PhoneOutlined/>),
-        content:"+25437441260 / +254702040346"
+        content:(
+            <Space>
+                <Link to={"tel:+25437441260"} style={{color:"black"}}>+25437441260</Link>
+                <div>/</div>
+                <Link to={"tel:+254702040346"} style={{color:"black"}}>+254702040346</Link>
+        </Space>)
     },
     {
         icon:(<MailOutlined/>),
-        content:"info@brethrenconstruction.co.ke"
+        content:(<Link to={"mailto:info@brethrenconstruction.co.ke"}>info@brethrenconstruction.co.ke</Link>)
     }
-]
+];
+
+//"+25437441260 / +254702040346
 
 
 export default ContactUs;
